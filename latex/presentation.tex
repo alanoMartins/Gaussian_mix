@@ -1,0 +1,158 @@
+\documentclass[aspectratio=169]{beamer}
+
+\usepackage[utf8]{inputenc} % codificacao de caracteres
+\usepackage[T1]{fontenc}    % codificacao de fontes
+\usepackage[brazil]{babel}  % idioma
+
+
+\usetheme{Berlin}         % tema
+\usecolortheme{seahorse}      % cores
+
+\usefonttheme[onlymath]{serif} % fonte modo matematico
+\usepackage{amsthm}
+
+% Titulo
+\title[\sc{Visão computacional}]{Visão Computacional - Gaussian Mixture Model}
+\author[Alano Martins Pinto]{Alano Martins Pinto}
+\institute{UECE - Universidade Estadual do Ceará} % opcional
+\date{\today}
+
+
+% Colocando numero de paginas no slide
+\setbeamertemplate{footline}[frame number]
+
+% Desativando os botoes de navegacao
+\beamertemplatenavigationsymbolsempty
+
+% Tela cheia\section{section1}
+
+\hypersetup{pdfpagemode=FullScreen}
+
+% Layout da pagina
+\hypersetup{pdfpagelayout=SinglePage}
+
+% Definicao de novos comandos
+\providecommand{\sin}{} \renewcommand{\sin}{\hspace{2pt}\textrm{sen}}
+\providecommand{\tan}{} \renewcommand{\tan}{\hspace{2pt}\textrm{tg}}
+\newcommand{\R}{\mathbb{R}}
+
+% Capa - requer o TikZ
+\newcommand{\capa}{
+    \begin{tikzpicture}[remember picture,overlay]
+        \node at (current page.south west)
+            {\begin{tikzpicture}[remember picture, overlay]
+                \fill[shading=radial,top color=orange,bottom color=orange,middle color=red] (0,0) rectangle (\paperwidth,\paperheight);
+            \end{tikzpicture}
+          };
+    \end{tikzpicture}
+}
+
+
+% Definicao de novos ambientes
+\theoremstyle{Definition}
+\newtheorem{defn}{Defini\c c\~ao}
+\newtheorem{teo}[theorem]{Teorema}
+\newtheorem{ex}[theorem]{Exemplo}
+\newtheorem{eq}[theorem]{Equa\c c\~ao}
+
+
+\usepackage{etoolbox}
+\newcommand{\zerodisplayskips}{%
+  \setlength{\abovedisplayskip}{0pt}%
+  \setlength{\belowdisplayskip}{0pt}%
+  \setlength{\abovedisplayshortskip}{0pt}%
+  \setlength{\belowdisplayshortskip}{0pt}}
+\appto{\normalsize}{\zerodisplayskips}
+\appto{\small}{\zerodisplayskips}
+\appto{\footnotesize}{\zerodisplayskips}
+
+
+
+
+\begin{document}
+
+\begin{frame}
+	\titlepage
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Tópicos}
+	\begin{itemize}
+		\item Descrição
+		\item Expectation–maximization (EM)
+		\item GMM covariance
+		\item Estimativa de densidade
+		\item Inferência Variacional
+		\item Dirichlet Process
+
+	\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+	\frametitle{Descrição}
+	
+	\begin{defn}
+		É um modelo probabilístico para representar subpopulações normalmente distribuídas dentro de uma população geral.
+	\end{defn}
+	
+	\begin{eq}
+			$ p(x) = \sum_{i=1}^{K} \phi_i N(x \vert \mu_i, \sigma_i) $ \\
+			$ N(x \vert \mu_i, \sigma_i) = 1 / { \frac{1}{\sigma_i \sqrt{2\pi}}} exp(- \frac{(x - \mu_i)^2}{2\sigma_i^2}) $ \\
+			$ \sum_{i=1}^{K} \phi_i = 1 $
+	\end{eq}
+	
+	
+\end{frame}
+
+\begin{frame}
+	\frametitle{Expectation–maximization (EM)}
+	
+	\begin{defn}
+		É um método iterativo para encontrar estimativas de máxima verossimilhança ou máximo a posteriori (MAP) de parâmetros em modelos estatísticos, onde o modelo depende de variáveis latentes não observada.
+	\end{defn}
+	
+	\begin{eq}
+			$ p(X \vert \lambda^{new}) \geq p(X \vert \lambda^{old}) $ 
+	\end{eq}
+	
+	
+\end{frame}
+
+\begin{frame}
+	\frametitle{Expectation (E)}
+	
+	\begin{defn}
+	 Uma função para a expectativa da probabilidade logarítmica avaliada usando a estimativa atual para os parâmetros
+	\end{defn}
+	
+	\begin{eq}
+			$ \gamma_{i,k} = \frac{ \phi_k N(x_i \vert \mu_k,\sigma_k)}{    \sum^k_{j=1}  \phi_j N(x_i \vert \mu_j,\sigma_j) } $ \\
+			$ \gamma_{i,k} = p(C_k \vert x_i,\phi,\mu,\sigma) $
+	\end{eq}
+	
+	
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Maximization (M)}
+	
+	\begin{defn}
+		Calcula os parâmetros que maximizam a probabilidade encontrada no passo E.
+	\end{defn}
+	
+	\begin{eq}
+			$ \phi_k = \sum^N_{i=1} \frac{\gamma_{i,k}}{N} $ \\
+			$ \mu_k = \frac{\sum^N_{i=1} \gamma_{i,k} x_i}{\sum^N_{i=1} \gamma_{i,k}} $ \\
+			$ \sigma_k = \frac{\sum^N_{i=1} \gamma_{i,k} (x_i - \mu_k)^2}{\sum^N_{i=1} \gamma_{i,k}} $
+	\end{eq}
+	
+	
+\end{frame}
+
+
+\AtEndDocument{\usebeamertemplate{endpage}}
+
+\end{document}
